@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-stylesheet type="text/xsl" href="staff.xsl"?>
+
+<staff>
+  <member>
+    <name>aji</name>
+    <icon>http://i.imgur.com/6cXDt.png</icon>
+    <bio>i dunno lol</bio>
+  </member>
+  <member>
+    <name>Rylee</name>
+    <icon>http://i.imgur.com/HnHg6.png</icon>
+    <bio>i'm rylee guise</bio>
+  </member>
+</staff>

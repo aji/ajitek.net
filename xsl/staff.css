@@ -1,0 +1,28 @@
+.container {
+	border: 3px solid black;
+	max-width: 600px;
+	margin: 10px auto;
+	padding: 30px;
+}
+
+.nav {
+	margin: 10px 0;
+	padding: 10px;
+	border: 3px solid blue;
+}
+
+.member {
+	border: 3px solid grey;
+	margin: 10px 0;
+	padding: 10px;
+}
+
+.icon {
+	float: left;
+	margin: 0 10px 0 0;
+	border: 3px solid red;
+}
+
+.break {
+	clear: both;
+}
