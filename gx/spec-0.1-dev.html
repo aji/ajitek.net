@@ -1,0 +1,388 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"  
+  "http://www.w3.org/TR/html4/loose.dtd">  
+<html > 
+<head><title>gx 0.1-dev Specification</title> 
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1"> 
+<meta name="generator" content="TeX4ht (http://www.tug.org/tex4ht/)"> 
+<meta name="originator" content="TeX4ht (http://www.tug.org/tex4ht/)"> 
+<!-- html --> 
+<meta name="src" content="spec.tex"> 
+<meta name="date" content="2014-11-21 03:32:00"> 
+<link rel="stylesheet" type="text/css" href="spec.css"> 
+</head><body 
+>
+<div class="maketitle">
+                                                                                         
+                                                                                         
+
+<h2 class="titleHead">gx 0.1-dev Specification</h2>
+<div class="author" ><span 
+class="cmr-12x-x-120">Alex Iadicicco </span><span 
+class="cmtt-12x-x-120">&#x003C;alex@ajitek.net&#x003E;</span></div>
+<br />
+<div class="date" ><span 
+class="cmr-12x-x-120">November 21, 2014</span></div>
+                                                                                         
+                                                                                         
+</div>
+                                                                                         
+                                                                                         
+<h2 class="likechapterHead"><a 
+ id="x1-1000"></a>Contents</h2> <div class="tableofcontents">
+<span class="chapterToc" >1 <a 
+href="#x1-20001" id="QQ2-1-2">Motivation</a></span>
+<br /><span class="chapterToc" >2 <a 
+href="#x1-30002" id="QQ2-1-3"><span 
+class="cmtt-12">gx </span>Language Specification</a></span>
+<br />&#x00A0;<span class="sectionToc" >2.1 <a 
+href="#x1-40002.1" id="QQ2-1-4">Philosophy</a></span>
+<br />&#x00A0;<span class="sectionToc" >2.2 <a 
+href="#x1-50002.2" id="QQ2-1-5">Type System</a></span>
+<br />&#x00A0;&#x00A0;<span class="subsectionToc" >2.2.1 <a 
+href="#x1-60002.2.1" id="QQ2-1-6">Basic Type Summary</a></span>
+<br />&#x00A0;&#x00A0;<span class="subsectionToc" >2.2.2 <a 
+href="#x1-70002.2.2" id="QQ2-1-7">Compound Type Summary</a></span>
+<br />&#x00A0;<span class="sectionToc" >2.3 <a 
+href="#x1-80002.3" id="QQ2-1-8">Storage</a></span>
+<br />&#x00A0;&#x00A0;<span class="subsectionToc" >2.3.1 <a 
+href="#x1-90002.3.1" id="QQ2-1-9">Random Access Memory (RAM)</a></span>
+<br />&#x00A0;&#x00A0;<span class="subsectionToc" >2.3.2 <a 
+href="#x1-100002.3.2" id="QQ2-1-10">Read-Only Memory (ROM)</a></span>
+<br />&#x00A0;&#x00A0;<span class="subsectionToc" >2.3.3 <a 
+href="#x1-110002.3.3" id="QQ2-1-11">Memory-Mapped Peripherals</a></span>
+<br />&#x00A0;<span class="sectionToc" >2.4 <a 
+href="#x1-120002.4" id="QQ2-1-12">Control Structures</a></span>
+<br />&#x00A0;<span class="sectionToc" >2.5 <a 
+href="#x1-130002.5" id="QQ2-1-13">Project Structure</a></span>
+<br />&#x00A0;<span class="sectionToc" >2.6 <a 
+href="#x1-140002.6" id="QQ2-1-14">Syntax</a></span>
+<br />&#x00A0;<span class="sectionToc" >2.7 <a 
+href="#x1-150002.7" id="QQ2-1-15">Language ABI</a></span>
+</div>
+                                                                                         
+                                                                                         
+<h2 class="chapterHead"><span class="titlemark">Chapter&#x00A0;1</span><br /><a 
+ id="x1-20001"></a>Motivation</h2>
+<!--l. 3--><p class="noindent" >These days, the Sega Genesis/Mega Drive is, on a global scale, mostly irrelevant, and for those
+places where it&#8217;s <span 
+class="cmti-12">still </span>relevant, there are already tools and experts available for crafting Genesis
+games. This raises the question of why somebody would bother with designing and implementing
+an SDK for it.
+      <ol  class="enumerate1" >
+      <li 
+  class="enumerate" id="x1-2002x1"><span 
+class="cmbx-12">The Sega Genesis homebrew scene is relatively small. </span>To be fair, not much
+      digging was done before reaching this conclusion, but it&#8217;s pretty clear from wandering
+      around IRC and other such places that of the classic consoles people just aren&#8217;t as
+      interested in the Genesis as they are consoles like the NES or SNES. Although there
+      are people making Genesis games, the number of people making homebrew games for
+      other consoles is clearly larger. Creating an SDK would lower the barrier to entry for
+      Genesis homebrew development, helping create a more vibrant homebrew scene.
+      </li>
+      <li 
+  class="enumerate" id="x1-2004x2"><span 
+class="cmbx-12">Current toolchains are lacking. </span>Homebrew Genesis games are often built with a
+      combination of assembly and C, much like was probably done in game studios in the
+      Genesis&#8217; heyday. This gives the programmer complete control over all aspects of the
+      system, which allows them to squeeze out every bit of performance possible. However,
+      modern C compilers are often designed for single-target systems, so taking advantage of
+      the Genesis Z80 coprocessor is a lot more work than it really needs to be. Fighting the
+      compiler&#8217;s optimizer is another real problem, and optimizing things like VDP writes
+      still needs to be done by hand. The whole process is very rigid, fragile, and manual,
+      and not conducive to fast-turnaround homebrew development.
+      </li>
+      <li 
+  class="enumerate" id="x1-2006x3"><span 
+class="cmbx-12">It&#8217;s  a  non-trivial  personal  challenge. </span>Attempting  to  build  a  toolchain  for  a
+      hardware system is not something you get done in a couple weekends, and it&#8217;s not
+      something you can write after your first run through <span 
+class="cmti-12">Learn Java in 30 days</span>. It&#8217;s an
+      exciting opportunity to apply some of the many skills I&#8217;ve gathered over the years,
+      and to ultimately create a homebrew game. If <span 
+class="cmtt-12">gx </span>turns into something functional, I&#8217;ll
+      consider it a success.
+      </li></ol>
+                                                                                         
+                                                                                         
+<h2 class="chapterHead"><span class="titlemark">Chapter&#x00A0;2</span><br /><a 
+ id="x1-30002"></a><span 
+class="cmtt-12">gx </span>Language Specification</h2>
+<!--l. 3--><p class="noindent" >The central component of the <span 
+class="cmtt-12">gx </span>SDK is the <span 
+class="cmtt-12">gx </span>language, often simply referred to as &#8220;<span 
+class="cmtt-12">gx</span>&#8221;. In
+context it should be clear if &#8220;<span 
+class="cmtt-12">gx</span>&#8221; is referring to the SDK as a whole, or just the language,
+but to disambiguate, the terms &#8220;<span 
+class="cmtt-12">gx </span>SDK&#8221; and &#8220;<span 
+class="cmtt-12">gx </span>language&#8221; or just &#8220;<span 
+class="cmtt-12">gx</span>lang&#8221; will be
+used.
+<!--l. 9--><p class="noindent" >This chapter describes the <span 
+class="cmtt-12">gx </span>language in detail, and serves as the official resource on anything
+related to the <span 
+class="cmtt-12">gx </span>language version 0.1-dev.
+<h3 class="sectionHead"><span class="titlemark">2.1   </span> <a 
+ id="x1-40002.1"></a>Philosophy</h3>
+<!--l. 3--><p class="noindent" >In order of importance, <span 
+class="cmtt-12">gx </span>is designed to accomplish the following:
+<!--l. 5--><p class="noindent" >
+      <ol  class="enumerate1" >
+      <li 
+  class="enumerate" id="x1-4002x1"><span 
+class="cmbx-12">Compile to fast and compact target system code. </span>If code generated by <span 
+class="cmtt-12">gx</span>
+      does  not  approach  the  performance  of  hand-compiled  code  and  compare  with  the
+      performance of code generated from C, then <span 
+class="cmtt-12">gx </span>offers no advantage over C. At that
+      point, an abstraction layer built of macros, wrappers, and compact C and assembly
+      code, similar to <span 
+class="cmtt-12">gx</span>&#8217;s predecessor <span 
+class="cmtt-12">genix-sdk</span>, would be at least as useful as <span 
+class="cmtt-12">gx</span>, since
+      many optimizing C compilers can generate code that performs very well. For this
+      reason, if a choice needs to be made between ease of optimization and ease of use, ease
+      of optimization will be chosen every time.
+      </li>
+      <li 
+  class="enumerate" id="x1-4004x2"><span 
+class="cmbx-12">Leave the design of the software itself in the hands of the programmer. </span>It&#8217;s
+      easy to design a system that locks the programmer into a particular architecture, which
+      would be leaning more toward framework versus toolkit. <span 
+class="cmtt-12">gx </span>should be as flexible as
+      possible, without sacrificing optimizability or usability.
+      </li>
+      <li 
+  class="enumerate" id="x1-4006x3"><span 
+class="cmbx-12">Abstract  away  common  patterns. </span>This  is  another  factor  that&#8217;s  important  for
+      making <span 
+class="cmtt-12">gx </span>stand out from existing solutions like C or assembly. Tasks like loading
+      and invoking Z80 code, loading sprites, setting chip registers, etc. should be made as
+      straightforward as possible without sacrificing optimizability or flexibility.
+      </li></ol>
+<!--l. 1--><p class="noindent" >
+<h3 class="sectionHead"><span class="titlemark">2.2   </span> <a 
+ id="x1-50002.2"></a>Type System</h3>
+<!--l. 3--><p class="noindent" ><span 
+class="cmtt-12">gx </span>is a strongly statically-typed language, meaning all conversions between types must be explicit,
+                                                                                         
+                                                                                         
+and the type of every value is known at compile time. The in-memory representation of values is
+well-specified, and conversion to and from basic integer types is made available whenever
+possible.
+<!--l. 9--><p class="noindent" >
+<h4 class="subsectionHead"><span class="titlemark">2.2.1   </span> <a 
+ id="x1-60002.2.1"></a>Basic Type Summary</h4>
+<!--l. 11--><p class="noindent" >The following basic types are built in to the language.
+<!--l. 13--><p class="noindent" >
+      <ol  class="enumerate1" >
+      <li 
+  class="enumerate" id="x1-6002x1"><span 
+class="cmtt-12">u8</span>, <span 
+class="cmtt-12">u16</span>, <span 
+class="cmtt-12">u32 </span>&#8211; Unsigned integer values of 8, 16, and 32 bits respectively.
+      </li>
+      <li 
+  class="enumerate" id="x1-6004x2"><span 
+class="cmtt-12">s8</span>, <span 
+class="cmtt-12">s16</span>, <span 
+class="cmtt-12">s32 </span>&#8211; Signed integer values of 8, 16, and 32 bits respectively.
+      </li>
+      <li 
+  class="enumerate" id="x1-6006x3"><span 
+class="cmtt-12">bool </span>&#8211; A single binary value, with the value <span 
+class="cmtt-12">true </span>or <span 
+class="cmtt-12">false</span>. If many boolean values
+      appear next to each other, the compiler may choose to have them packed as individual
+      bits as compactly as possible in a way that does not make significant performance
+      sacrifices.
+      </li></ol>
+<!--l. 28--><p class="noindent" >The following types are built in to the language and have parameters that affect their behavior.
+These were designed to take advantage of certain processor features or to wrap common user types
+in an expressive way.
+<!--l. 32--><p class="noindent" >
+      <ol  class="enumerate1" >
+      <li 
+  class="enumerate" id="x1-6008x1"><span 
+class="cmtt-12">*</span><span 
+class="cmti-12">target </span>&#8211; A pointer type. Similar to the C construct of the same name, values of this
+      type hold the location of a value of type <span 
+class="cmti-12">target</span>.
+      </li>
+      <li 
+  class="enumerate" id="x1-6010x2"><span 
+class="cmtt-12">bcd&#x003C;</span><span 
+class="cmti-12">N</span><span 
+class="cmtt-12">&#x003E; </span>&#8211; Binary-coded decimal (BCD) value of <span 
+class="cmti-12">N </span>decimal digits. Values of this type
+      require at least <span 
+class="cmmi-12">N </span><span 
+class="cmsy-10x-x-120">&#x00D7; </span>4 bits of memory. Please see Appendix TODO for potential issues
+      when working with BCD types.
+      </li>
+      <li 
+  class="enumerate" id="x1-6012x3"><span 
+class="cmtt-12">fixed&#x003C;</span><span 
+class="cmti-12">M</span><span 
+class="cmtt-12">,</span><span 
+class="cmti-12">N</span><span 
+class="cmtt-12">&#x003E; </span>&#8211; Fixed point arithmetic value with <span 
+class="cmti-12">M </span>bits of whole part and <span 
+class="cmti-12">N </span>bits of
+      fractional part. Values of this type require at least <span 
+class="cmmi-12">M </span>+ <span 
+class="cmmi-12">N </span>bits of memory. Please see
+      Appendix TODO for potential issues when working with fixed point types.
+      </li></ol>
+                                                                                         
+                                                                                         
+<!--l. 51--><p class="noindent" >
+<h4 class="subsectionHead"><span class="titlemark">2.2.2   </span> <a 
+ id="x1-70002.2.2"></a>Compound Type Summary</h4>
+<!--l. 53--><p class="noindent" >The following compound type constructs are available.
+<!--l. 55--><p class="noindent" >
+      <ol  class="enumerate1" >
+      <li 
+  class="enumerate" id="x1-7002x1"><span 
+class="cmtt-12">[</span><span 
+class="cmti-12">size</span><span 
+class="cmtt-12">]</span><span 
+class="cmti-12">target </span>&#8211; An array. An ordered sequence of values of a single type. The semantics
+      of arrays can be somewhat complicated.
+      </li>
+      <li 
+  class="enumerate" id="x1-7004x2"><span 
+class="cmtt-12">struct </span><span 
+class="cmti-12">name </span><span 
+class="cmsy-10x-x-120">{ </span><span 
+class="cmti-12">members </span><span 
+class="cmti-12">&#x2026; </span><span 
+class="cmsy-10x-x-120">} </span>&#8211; Similar to the C construct of the same name, <span 
+class="cmtt-12">struct</span>
+      places its members consecutively in memory.
+      </li>
+      <li 
+  class="enumerate" id="x1-7006x3"><span 
+class="cmtt-12">enum </span><span 
+class="cmti-12">name </span><span 
+class="cmsy-10x-x-120">{ </span><span 
+class="cmti-12">variants </span><span 
+class="cmti-12">&#x2026; </span><span 
+class="cmsy-10x-x-120">} </span>&#8211; Similar to the Rust construct of the same name, <span 
+class="cmtt-12">enum </span>is
+      <span 
+class="cmtt-12">gx</span>&#8217;s tagged union type. It should be noted that <span 
+class="cmtt-12">enum</span>s are occasionally more memory
+      efficient than the equivalent C, since many instances of an <span 
+class="cmtt-12">enum </span>will only require enough
+      space for the active variant, such as constants and certain instances of local variables.
+      </li>
+      <li 
+  class="enumerate" id="x1-7008x4"><span 
+class="cmtt-12">bitvec </span><span 
+class="cmti-12">name </span><span 
+class="cmtt-12">( </span><span 
+class="cmti-12">fields </span><span 
+class="cmti-12">&#x2026; </span><span 
+class="cmtt-12">) </span>&#8211; A bit vector. This is essentially a bit-packed version of
+      <span 
+class="cmtt-12">struct</span>, with much tighter control over field sizes. <span 
+class="cmtt-12">bitvec</span>s with fewer than 32 bits are
+      as efficient as <span 
+class="cmtt-12">u32</span>s in many cases. The goal is to replace tedious masking and shifting
+      needed when working with bit-packed values. In many cases the compiler can detect
+      effective optimization opportunities for making <span 
+class="cmtt-12">bitvec </span>field accesses very fast. See
+      Appendix TODO for tips on getting the most out of <span 
+class="cmtt-12">bitvec</span>s.
+      </li>
+      <li 
+  class="enumerate" id="x1-7010x5"><span 
+class="cmtt-12">bitpat </span><span 
+class="cmti-12">name </span><span 
+class="cmtt-12">( </span><span 
+class="cmti-12">pattern </span><span 
+class="cmtt-12">) </span>&#8211; A type that scrambles logical bits to get their physical
+      ordering. This can be useful for certain kinds of encoder and decoder. The goal is to
+      replace tedious masking and shifting needed when working with bit-packed values. See
+      Appendix TODO for tips on getting the most out of <span 
+class="cmtt-12">bitpat</span>s.
+      </li></ol>
+<!--l. 1--><p class="noindent" >
+<h3 class="sectionHead"><span class="titlemark">2.3   </span> <a 
+ id="x1-80002.3"></a>Storage</h3>
+<!--l. 3--><p class="noindent" ><span 
+class="cmtt-12">gx </span>gives the programmer a significant amount of control over how values are laid out in memory, as
+this is essential to writing effective Genesis ROMs. A number of qualifiers can be attached to a
+                                                                                         
+                                                                                         
+storage declaration that determine where in memory the value will be stored, and what sorts of
+properties it has.
+<!--l. 9--><p class="noindent" >
+<h4 class="subsectionHead"><span class="titlemark">2.3.1   </span> <a 
+ id="x1-90002.3.1"></a>Random Access Memory (RAM)</h4>
+<!--l. 11--><p class="noindent" >This is where variables are located by default. Values in this region can be read from or
+written to. The programmer may force a value be stored in RAM by using the <span 
+class="cmtt-12">ram</span>
+keyword.
+<!--l. 15--><p class="noindent" >Many times it is useful to be able to reuse different parts of RAM. An example use case might be
+state-specific chunks of memory, such as per-level in a game. For this, <span 
+class="cmtt-12">gx </span>provides &#8220;RAM regions&#8221;.
+A RAM &#8220;region&#8221; is a named section of RAM with 0 or more named &#8220;layers&#8221;. Variables can be
+assigned to each layer as appropriate. Layers will be overlapped in RAM as if they
+were members of a giant C <span 
+class="cmtt-12">union</span>. Regions will never overlap other allocated regions of
+RAM.
+<!--l. 23--><p class="noindent" >
+<h4 class="subsectionHead"><span class="titlemark">2.3.2   </span> <a 
+ id="x1-100002.3.2"></a>Read-Only Memory (ROM)</h4>
+<!--l. 25--><p class="noindent" >The compiler may choose to consider variables that can proven read-only as ROM variables. The
+programmer may also specify that a variable is a ROM variable by using the <span 
+class="cmtt-12">rom </span>keyword.
+ROM variables are read-only; an attempt to write to one is an error and will prevent
+compilation.
+<!--l. 30--><p class="noindent" >The layout of variables in ROM can be important to a given application. In addition to the
+standard alignment and direct addressing layout directives present in most assemblers and as
+common C compiler extensions, <span 
+class="cmtt-12">gx </span>provides &#8220;ROM frames&#8221;. A ROM frame specifies how many of
+the least significant bits of the addresses allocated to the variable are allowed to change.
+In other words, this can be used to prevent a variable from crossing certain address
+boundaries.
+<!--l. 38--><p class="noindent" >
+<h4 class="subsectionHead"><span class="titlemark">2.3.3   </span> <a 
+ id="x1-110002.3.3"></a>Memory-Mapped Peripherals</h4>
+<!--l. 40--><p class="noindent" >TODO (this is the part where i re-implement <span 
+class="cmtt-12">volatile</span>)
+                                                                                         
+                                                                                         
+<h3 class="sectionHead"><span class="titlemark">2.4   </span> <a 
+ id="x1-120002.4"></a>Control Structures</h3>
+<!--l. 3--><p class="noindent" >TODO
+<h3 class="sectionHead"><span class="titlemark">2.5   </span> <a 
+ id="x1-130002.5"></a>Project Structure</h3>
+<!--l. 3--><p class="noindent" >A <span 
+class="cmtt-12">gx </span>program is a collection of multiple <span 
+class="cmtt-12">.gx </span>source files which form one logical project. The <span 
+class="cmtt-12">gx</span>
+compiler builds entire projects directly from their source files. This is possible because the ROM
+output is at most 4 megabytes in size, which should fit comfortably in memory on any modern
+system.
+<!--l. 9--><p class="noindent" >The project itself is a bucket of &#8220;units&#8221;, which are little more than namespaces. Units are closely
+tied to the memory model.
+<!--l. 12--><p class="noindent" >Within each unit is a collection of code segments in the form of functions, storage declarations, and
+type declarations.
+<h3 class="sectionHead"><span class="titlemark">2.6   </span> <a 
+ id="x1-140002.6"></a>Syntax</h3>
+<!--l. 3--><p class="noindent" >TODO
+<h3 class="sectionHead"><span class="titlemark">2.7   </span> <a 
+ id="x1-150002.7"></a>Language ABI</h3>
+<!--l. 4--><p class="noindent" >This section specifies anything related to the compiled interface of the language, including calling
+conventions and type implementations, so that programmers can safely write C and assembly
+extensions to their <span 
+class="cmtt-12">gx </span>code.
+ 
+</body></html> 
+
+                                                                                         
+
+
