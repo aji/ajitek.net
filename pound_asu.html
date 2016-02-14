@@ -6,26 +6,37 @@
 .content {
   max-width: 700px;
   font-family: sans-serif;
-  margin: 0 auto;
+  font-size: 16pt;
+  margin: 0 auto 30pt;
   }
 p.tag {
   font-weight: bold;
-  color: #014;
+  color: #888;
   width: 50%;
   text-align: center;
   margin: 0 auto 72pt;
   }
 p {
-  line-height: 150%;
+  line-height: 140%;
+  text-align: justify;
   }
 h1 {
-  margin: 128pt 0 0 0;
+  margin: 60pt 0 0 0;
   font-size: 72pt;
   text-align: center;
   }
 h2 {
   margin-top: 36pt;
-  color: #014;
+  color: #888;
+  font-size: 16pt;
+  position: relative;
+  }
+h2::before {
+  content: 'Q:';
+  position: absolute;
+  left: -2em;
+  display: inline-block;
+  color: #ccc;
   }
 </style>
 </head>
@@ -34,7 +45,7 @@ h2 {
 <div class="content">
 
 <h1><tt>#asu</tt></h1>
-<p class="tag">irc.staticbox.net</p>
+<p class="tag">irc.esper.net</p>
 
 <h2>What do you guys talk about in here?</h2>
 <p>There's really no guidelines to conversation. Since nearly all channel
@@ -48,51 +59,13 @@ h2 {
 <p>ASU is a student-run channel and has no affiliation with ASU in any
   official capacity.</p>
 
-<h2>How do I get +v/voice/that little gold star.</h2>
-<p>By registering an account with network services, you will automatically
-  be given voice in the channel. For information on how to register,
-  see <tt>/msg NickServ HELP REGISTER</tt>. Note that you must log into
-  your account (see <tt>/msg NickServ HELP IDENTIFY</tt>) each time you
-  connect to the network, though many IRC clients can be configured
-  to do this automatically. (For the IRC savvy, StaticBox supports
-  authentication through client certificates and SASL as well.)</p>
-<p>Registering an account offers more advantages than just voice,
-  though. An account is associated with one or more nicknames, all of
-  which are "protected" by the network services software. If somebody
-  attempts to use your nickname while you are not connected, it will
-  ask them politely to log in to the account. If they don't log in, when
-  you eventually connect and log in, you can forcefully remove them from
-  the network and use the nickname yoursel. See <tt>/msg NickServ HELP
-  GHOST</tt> for more information on this feature. (NickServ may also
-  be configured to be more strict about people using your nickname. For
-  information on this, see <tt>/msg NickServ HELP SET ENFORCE</tt>.)</p>
-<p>For those curious about the purpose of giving +v to registered users,
-  it is merely a precautionary measure. (Voice only makes a difference
-  if the channel is "moderated" or +m)</p>
-
-<h2>This IRC server does not support channel modes like founder, admin,
-  or halfop. What gives? For that matter, why does nobody but ChanServ
-  have channel operator privileges?</h2>
-<p>Regarding founder, admin, and halfop modes, this is a heavily debated
-  topic in the IRC community and will not be addressed here. However,
-  even if the IRCd <i>did</i> offer these modes, they would not be used,
-  as is explained in the next paragraph.</p>
-<p>Since <tt>#asu</tt> is not affiliated with any sort of organization
-  or project, it doesn't make much sense to mark people as "channel
-  staff." The focus of <tt>#asu</tt> is on its users, not its
-  facilitators. The channel founders and staff can perform all necessary
-  channel management functions through ChanServ, so channel operator
-  status has little to offer.</p>
-
-<h2>Why did you choose StaticBox and not this other network OtherNet?</h2>
-<p>This is mainly because of the preference of the channel
-  founders. However, StaticBox has a lot of great things going for it.
-  It's a small network, compared to networks like EsperNet or Freenode,
-  so it's very easy to interact with and get help from the network
-  staff. Additionally, the network staff are very closely involved
-  with the development of the software run by StaticBox (which is
-  also the software run by man other networks, including EsperNet and
-  Freenode.)</p>
+<h2>Why did you choose EsperNet and not this other network OtherNet?</h2>
+<p>This is mainly because of the preference of the channel founders. The
+  network <em>used</em> to be on StaticBox, but that network was merged into
+  AlphaChat, and the instability of the whole thing led us to move to Esper, a
+  network that has been around for a very long time and has a pretty sizable
+  user base. It also helps that some of the channel members are also Esper
+  moderators.</p>
 
 </div>
 </body>
